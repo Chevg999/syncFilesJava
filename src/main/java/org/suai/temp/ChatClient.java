@@ -31,6 +31,9 @@ public class ChatClient {
     public static void main(String[] args) {
         Options options = new Options();
 
+        Option fileOption = new Option("f", "file", true, "file path to credentials");
+        fileOption.setRequired(false);
+        options.addOption(fileOption);
 
         Option loginOption = new Option("l", "login", true, "Login credentials in the format 'login:password'");
         loginOption.setRequired(false);
@@ -62,6 +65,7 @@ public class ChatClient {
 
         String localSyncPath = cmd.getArgs()[0];
 
+        String credentialsFile = cmd.getOptionValue("file", "authData.json");
         String login = cmd.getOptionValue("login");
         String server = cmd.getOptionValue("server");
         syncRule = cmd.getOptionValue("rule", "Manual");
@@ -104,11 +108,11 @@ public class ChatClient {
                 return;
             }
 
-            saveDataToJson("authData.json", token, hostname, port);
+            saveDataToJson(credentialsFile, token, hostname, port);
             return;
         } else {
             try {
-                readDataFromJson("authData.json");
+                readDataFromJson(credentialsFile);
                 clientModel = new ClientModel(hostname, port);
                 clientModel.connect();
             } catch (Exception e) {
